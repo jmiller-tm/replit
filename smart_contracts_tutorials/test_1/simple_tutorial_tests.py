@@ -4,7 +4,7 @@ from decimal import Decimal
 import os
 import unittest
 core_api_url = 'https://core-api-demo.zootopia.tmachine.io'
-auth_token = 'A0006289297864182782927!1ruBonOcUfg5o+8gLqEdl6uwEOEXP7QAo3qffzNnibMR470w76WOg5ek9/T1y6AwH+9M0tyxaq7QGSssY4VyBF/mQ8w='
+auth_token = os.environ['service_account_token']
 CONTRACT_FILE = './test_contract.py'
 
 class TutorialTest(unittest.TestCase):
