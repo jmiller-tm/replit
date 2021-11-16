@@ -1,0 +1,101 @@
+syntax = "proto3";
+
+package core_api.v1.payment_orders;
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/field_mask.proto";
+import "vault_kernel_calendar_schedules_proto_calendar_operations.proto";
+
+message CreatePaymentOrderRequest {
+  string request_id = 1;
+  PaymentOrder payment_order = 2;
+}
+
+message PaymentOrder {
+  string id = 1;
+  string create_request_id = 2;
+  string client_id = 3;
+  string client_order_id = 4;
+  string debtor_account_id = 5;
+  Party debtor_party = 6;
+  Party creditor_party = 7;
+  string denomination = 8;
+  string reference = 9;
+  map<string, string> metadata = 10;
+  PaymentOrderType type = 11;
+  oneof payment_schedule {
+    FuturePaymentSchedule future_schedule = 13;
+    RecurringPaymentSchedule recurring_schedule = 14;
+  }
+  PaymentOrderStatus current_status = 15;
+  google.protobuf.Timestamp create_timestamp = 16;
+  google.protobuf.Timestamp update_timestamp = 17;
+
+  calendar_operations.CalendarOperation calendar_operation = 18;
+}
+
+message FuturePaymentSchedule {
+  string payment_date = 1;
+  string payment_amount = 2;
+}
+
+message RecurringPaymentSchedule {
+  string first_payment_date = 1;
+  string first_payment_amount = 2;
+  oneof termination {
+    string last_payment_date = 3;
+
+    int32 number_of_payments = 7;
+  }
+  string last_payment_amount = 4;
+  string recurring_schedule_start_date = 8;
+  string recurring_schedule_expression = 5;
+  string recurring_amount = 6;
+}
+
+message UpdatePaymentOrderRequest {
+  string request_id = 1;
+  PaymentOrder payment_order = 2;
+  google.protobuf.FieldMask update_mask = 3;
+}
+
+message GetPaymentOrderRequest { string id = 1; }
+
+message BatchGetPaymentOrdersRequest { repeated string ids = 1; }
+
+message BatchGetPaymentOrdersResponse {
+  map<string, PaymentOrder> payment_orders = 1;
+}
+
+message ListPaymentOrdersRequest {
+  repeated PaymentOrderType types = 1;
+  repeated string debtor_account_ids = 2;
+  uint32 page_size = 3;
+  string page_token = 4;
+}
+
+message ListPaymentOrdersResponse {
+  repeated PaymentOrder payment_orders = 1;
+  string previous_page_token = 2;
+  string next_page_token = 3;
+}
+
+message Party {
+  string routing_info_type = 1;
+  string identification = 2;
+  string name = 3;
+}
+
+enum PaymentOrderType {
+  PAYMENT_ORDER_TYPE_UNKNOWN = 0;
+  PAYMENT_ORDER_TYPE_FUTURE_DATED = 2;
+  PAYMENT_ORDER_TYPE_RECURRING = 3;
+}
+
+enum PaymentOrderStatus {
+  PAYMENT_ORDER_STATUS_UNKNOWN = 0;
+  PAYMENT_ORDER_STATUS_ACTIVE = 1;
+  PAYMENT_ORDER_STATUS_INACTIVE = 2;
+  PAYMENT_ORDER_STATUS_CANCELLED = 3;
+  PAYMENT_ORDER_STATUS_COMPLETED = 4;
+}

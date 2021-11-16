@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+package calendar_operations;
+
+import "google/protobuf/timestamp.proto";
+
+import "vault_kernel_scheduler_proto_jobs.proto";
+
+message CalendarOperation {
+  string calendar_id = 1;
+  string event_name = 2;
+  CalendarMode calendar_mode = 3;
+  string event_duration = 4;
+}
+
+enum CalendarMode {
+  CALENDAR_MODE_NOOP = 0;
+  CALENDAR_MODE_DELAY = 1;
+  CALENDAR_MODE_SKIP = 2;
+  CALENDAR_MODE_FORWARD = 3;
+}
+
+message NextJobRequest {
+  string request_id = 7;
+  string schedule_id = 1;
+  scheduler.jobs.JobOutcome job_outcome = 2;
+  CalendarOperation calendar_operation = 3;
+  string group_id = 4;
+  google.protobuf.Timestamp scheduled_timestamp = 5;
+  string calendar_aware_schedule_id = 6;
+}

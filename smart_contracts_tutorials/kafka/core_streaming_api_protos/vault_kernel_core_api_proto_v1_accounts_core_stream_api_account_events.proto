@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+import "common_protos_version.proto";
+
+import "vault_kernel_core_api_proto_v1_accounts_core_api_accounts.proto";
+
+package core_stream_api_events.v1.accounts;
+
+message AccountEvent {
+  string event_id = 1;
+  google.protobuf.Timestamp timestamp = 2;
+  version.SemVer vault_version = 3;
+  int64 change_id = 4;
+
+  oneof event {
+    AccountCreatedEvent account_created = 5;
+    AccountUpdatedEvent account_updated = 6;
+  }
+}
+
+message AccountCreatedEvent { core_api.v1.accounts.Account account = 1; }
+
+message AccountUpdatedEvent {
+  core_api.v1.accounts.Account account = 1;
+  google.protobuf.FieldMask update_mask = 2;
+}

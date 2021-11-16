@@ -1,0 +1,43 @@
+
+syntax = "proto3";
+
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+import "common_protos_version.proto";
+import "vault_kernel_core_api_proto_v1_balances_core_api_balances.proto";
+import "vault_kernel_postings_api_proto_v1_api.proto";
+
+package core_stream_api_events.v1.balances;
+
+message BalanceEvent {
+  string event_id = 1;
+  google.protobuf.Timestamp timestamp = 2;
+  version.SemVer vault_version = 3;
+  int64 change_id = 4;
+
+  oneof event { BalanceCreatedEvent balance_created = 5; }
+}
+
+message BalanceCreatedEvent { core_api.v1.balances.Balance balance = 1; }
+
+message AccountBalanceEvent {
+  string event_id = 1;
+  string account_id = 2;
+  string posting_instruction_batch_id = 3;
+  repeated core_api.v1.balances.Balance balances = 4;
+  google.protobuf.Timestamp timestamp = 5;
+  version.SemVer vault_version = 6;
+}
+
+message PostingBalance {
+  string posting_instruction_batch_id = 1;
+  string as_of_posting_instruction_batch_id = 2;
+  string amount = 3;
+  string account_id = 4;
+  string account_address = 5;
+  posting_api.v1.PostingPhase phase = 6;
+  string asset = 7;
+  string denomination = 8;
+  google.protobuf.Timestamp value_timestamp = 9;
+}

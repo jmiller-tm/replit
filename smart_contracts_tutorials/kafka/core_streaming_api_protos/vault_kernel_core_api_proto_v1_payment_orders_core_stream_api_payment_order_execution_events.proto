@@ -1,0 +1,38 @@
+syntax = "proto3";
+
+import "vault_kernel_core_api_proto_v1_common_core_stream_api_common.proto";
+import "vault_kernel_core_api_proto_v1_payment_orders_core_api_payment_orders.proto";
+import "google/protobuf/timestamp.proto";
+import "common_protos_version.proto";
+
+message PaymentOrderExecutionEvent {
+  string event_id = 1;
+  google.protobuf.Timestamp timestamp = 2;
+  version.SemVer vault_version = 3;
+  int64 change_id = 4;
+
+  oneof event {
+    PaymentOrderExecutionCreatedEvent payment_order_execution_created = 5;
+  }
+}
+
+message PaymentOrderExecutionCreatedEvent {
+  PaymentOrderExecution payment_order_execution = 1;
+}
+
+message PaymentOrderExecution {
+  string id = 1;
+  string payment_order_id = 2;
+  string client_id = 3;
+  string client_order_id = 4;
+  string debtor_account_id = 5;
+  core_api.v1.payment_orders.Party debtor_party = 6;
+  core_api.v1.payment_orders.Party creditor_party = 7;
+  string denomination = 8;
+  string reference = 9;
+  map<string, string> metadata = 10;
+  core_api.v1.payment_orders.PaymentOrderType type = 11;
+  string amount = 12;
+  core_api.v1.payment_orders.PaymentOrderStatus current_status = 13;
+  google.protobuf.Timestamp create_timestamp = 14;
+}

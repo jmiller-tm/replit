@@ -1,0 +1,281 @@
+
+
+syntax = "proto3";
+
+package posting_api.v1;
+
+import "common_protos_version.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+message CreatePostingInstructionBatchRequest {
+  reserved 1;
+  string request_id = 2;
+
+  bool dry_run = 4;
+
+  PostingInstructionBatch posting_instruction_batch = 3;
+}
+
+message PostingInstructionBatch {
+  string id = 1;
+
+  string create_request_id = 2;
+
+  string client_id = 3;
+
+  string client_batch_id = 4;
+
+  repeated PostingInstruction posting_instructions = 5;
+
+  map<string, string> batch_details = 6;
+
+  google.protobuf.Timestamp value_timestamp = 7;
+
+  PostingInstructionBatchStatus status = 8;
+
+  PostingInstructionBatchError error = 9;
+
+  google.protobuf.Timestamp insertion_timestamp = 10;
+
+  bool dry_run = 11;
+}
+
+message PostingInstruction {
+  string id = 1;
+
+  string client_transaction_id = 2;
+
+  oneof instruction {
+    OutboundAuthorisation outbound_authorisation = 8;
+
+    InboundAuthorisation inbound_authorisation = 9;
+
+    AuthorisationAdjustment authorisation_adjustment = 10;
+
+    Settlement settlement = 11;
+
+    Release release = 12;
+
+    InboundHardSettlement inbound_hard_settlement = 13;
+
+    OutboundHardSettlement outbound_hard_settlement = 14;
+
+    Transfer transfer = 24;
+
+    CustomInstruction custom_instruction = 15;
+  }
+
+  repeated string pics = 16;
+
+  map<string, string> instruction_details = 17;
+
+  repeated Posting committed_postings = 18;
+
+  repeated PostingViolation posting_violations = 19;
+
+  repeated AccountViolation account_violations = 20;
+
+  repeated RestrictionViolation restriction_violations = 21;
+
+  repeated ContractViolation contract_violations = 22;
+
+  Override override = 23;
+
+  TransactionCode transaction_code = 25;
+}
+
+message PostingViolation { PostingViolationType type = 1; }
+
+enum PostingViolationType {
+  POSTING_VIOLATION_CLIENT_TRANSACTION_ALREADY_EXISTS = 0;
+  POSTING_VIOLATION_CLIENT_TRANSACTION_DOES_NOT_EXIST = 1;
+  POSTING_VIOLATION_ADJUSTMENT_YIELDS_AUTHORISATION_WITH_NEGATIVE_AMOUNT = 2;
+  POSTING_VIOLATION_CLIENT_TRANSACTION_CLOSED = 3;
+  POSTING_VIOLATION_CLIENT_TRANSACTION_INVALID_OPERATION = 4;
+}
+
+message AccountViolation {
+  string account_id = 1;
+  string payment_device_token = 2;
+  AccountViolationType type = 3;
+}
+
+enum AccountViolationType {
+  ACCOUNT_VIOLATION_ACCOUNT_NOT_PRESENT = 0;
+  ACCOUNT_VIOLATION_ACCOUNT_STATUS_INVALID = 1;
+  ACCOUNT_VIOLATION_UNSUPPORTED_DENOMINATION = 2;
+  ACCOUNT_VIOLATION_PAYMENT_DEVICE_INVALID = 3;
+}
+
+message RestrictionViolation {
+  string restriction_set_id = 1;
+  string account_id = 2;
+  string payment_device_id = 3;
+  string customer_id = 4;
+  bool requires_review = 5;
+}
+
+message ContractViolation {
+  string account_id = 1;
+  ContractViolationType type = 2;
+  string reason = 3;
+}
+
+enum ContractViolationType {
+  CONTRACT_VIOLATION_BREACH_TERMS_AND_CONDITIONS = 0;
+  CONTRACT_VIOLATION_INSUFFICIENT_FUNDS = 1;
+}
+
+enum PostingInstructionBatchStatus {
+  POSTING_INSTRUCTION_BATCH_STATUS_UNKNOWN = 0;
+  POSTING_INSTRUCTION_BATCH_STATUS_ACCEPTED = 1;
+  POSTING_INSTRUCTION_BATCH_STATUS_REJECTED = 2;
+}
+
+message PostingInstructionBatchError {
+  PostingInstructionBatchErrorType type = 1;
+  string message = 2;
+}
+
+enum PostingInstructionBatchErrorType {
+  POSTING_INSTRUCTION_BATCH_ERROR_TYPE_INVALID_ARGUMENT = 0;
+  POSTING_INSTRUCTION_BATCH_ERROR_TYPE_INTERNAL = 1;
+  POSTING_INSTRUCTION_BATCH_ERROR_TYPE_SERVICE_UNAVAILABLE = 2;
+  POSTING_INSTRUCTION_BATCH_ERROR_TYPE_ABORTED = 3;
+}
+
+message PostingInstructionBatchCreatedEvent {
+  PostingInstructionBatch posting_instruction_batch = 1;
+  TechnicalMetadata technical_metadata = 2;
+  google.protobuf.FieldMask update_mask = 3;
+}
+
+message TechnicalMetadata {
+  string event_id = 1;
+  google.protobuf.Timestamp capture_timestamp = 2;
+  version.SemVer vault_version = 3;
+  map<string, string> context = 4;
+}
+
+message OutboundAuthorisation {
+  string amount = 1;
+  string denomination = 2;
+  TargetAccount target_account = 3;
+  string internal_account_id = 4;
+  bool advice = 5;
+  string target_account_id = 6;
+}
+
+message InboundAuthorisation {
+  string amount = 1;
+  string denomination = 2;
+  TargetAccount target_account = 3;
+  string internal_account_id = 4;
+  bool advice = 5;
+  string target_account_id = 6;
+}
+
+message AuthorisationAdjustment {
+  oneof adjustment_amount {
+    string amount = 1;
+    string replacement_amount = 6;
+  }
+  string denomination = 2;
+  bool advice = 3;
+  string target_account_id = 4;
+  string internal_account_id = 5;
+  string authorised_amount = 7;
+  string delta_amount = 8;
+}
+
+message Settlement {
+  string amount = 1;
+  bool final = 2;
+  string denomination = 3;
+  string target_account_id = 4;
+  string internal_account_id = 5;
+}
+
+message Release {
+  string amount = 1;
+  string denomination = 2;
+  string target_account_id = 3;
+  string internal_account_id = 4;
+}
+
+message InboundHardSettlement {
+  string amount = 1;
+  string denomination = 2;
+  TargetAccount target_account = 3;
+  string internal_account_id = 4;
+  bool advice = 5;
+  string target_account_id = 6;
+}
+
+message OutboundHardSettlement {
+  string amount = 1;
+  string denomination = 2;
+  TargetAccount target_account = 3;
+  string internal_account_id = 4;
+  bool advice = 5;
+  string target_account_id = 6;
+}
+
+message Transfer {
+  string amount = 1;
+  string denomination = 2;
+  TargetAccount debtor_target_account = 3;
+  string debtor_target_account_id = 4;
+  TargetAccount creditor_target_account = 5;
+  string creditor_target_account_id = 6;
+}
+
+message CustomInstruction { repeated Posting postings = 1; }
+
+message Posting {
+  bool credit = 1;
+  string amount = 2;
+  string denomination = 3;
+  string account_id = 4;
+  string account_address = 5;
+  string asset = 6;
+  PostingPhase phase = 7;
+}
+
+message TargetAccount {
+  oneof target_account {
+    string payment_device_token = 1;
+    string account_id = 2;
+  }
+}
+
+enum PostingPhase {
+  POSTING_PHASE_UNKNOWN = 0;
+  POSTING_PHASE_PENDING_INCOMING = 1;
+  POSTING_PHASE_PENDING_OUTGOING = 2;
+  POSTING_PHASE_COMMITTED = 3;
+}
+
+message Override { OverrideRestrictions restrictions = 1; }
+
+message OverrideRestrictions {
+  bool all = 1;
+  repeated string restriction_set_ids = 2;
+}
+
+message PostingsCommitted {
+  string batch_id = 1;
+  string account_id = 2;
+  google.protobuf.Timestamp value_timestamp = 3;
+  int64 update_count = 4;
+
+  repeated Posting postings = 5;
+  bool internal_account = 6;
+}
+
+message TransactionCode {
+  string domain = 1;
+  string family = 2;
+  string subfamily = 3;
+}

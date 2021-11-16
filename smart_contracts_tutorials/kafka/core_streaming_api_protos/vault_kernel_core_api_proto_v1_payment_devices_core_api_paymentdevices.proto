@@ -1,0 +1,82 @@
+syntax = "proto3";
+
+package core_api.v1.payment_devices;
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/field_mask.proto";
+
+import "vault_kernel_core_api_proto_v1_common_core_api_common.proto";
+
+message CreatePaymentDeviceRequest {
+  PaymentDevice payment_device = 1;
+  string request_id = 2;
+}
+
+message UpdatePaymentDeviceRequest {
+  PaymentDevice payment_device = 1;
+  string request_id = 2;
+  google.protobuf.FieldMask update_mask = 3;
+  core_api.v1.common.Overrides overrides = 4;
+}
+
+message BatchGetPaymentDevicesRequest { repeated string ids = 1; }
+
+message BatchGetPaymentDevicesResponse {
+  map<string, PaymentDevice> payment_devices = 1;
+}
+
+message CreatePaymentDeviceLinkRequest {
+  PaymentDeviceLink payment_device_link = 1;
+  string request_id = 2;
+}
+
+message UpdatePaymentDeviceLinkRequest {
+  PaymentDeviceLink payment_device_link = 1;
+  string request_id = 2;
+  google.protobuf.FieldMask update_mask = 3;
+}
+
+message ListPaymentDeviceLinksRequest {
+  repeated string tokens = 1;
+  repeated string payment_device_ids = 2;
+  repeated string account_ids = 3;
+  google.protobuf.Timestamp effective_timestamp = 4;
+  bool include_inactive = 5;
+}
+
+message ListPaymentDeviceLinksResponse {
+  repeated PaymentDeviceLink payment_device_links = 1;
+}
+
+message PaymentDevice {
+  string id = 1;
+  map<string, string> routing_info = 2;
+  PaymentDeviceStatus status = 3;
+  google.protobuf.Timestamp create_timestamp = 4;
+  google.protobuf.Timestamp start_timestamp = 5;
+  google.protobuf.Timestamp end_timestamp = 6;
+  repeated string tags = 7;
+}
+
+message PaymentDeviceLink {
+  string id = 1;
+  string token = 2;
+  string payment_device_id = 3;
+  string account_id = 4;
+  PaymentDeviceLinkStatus status = 5;
+  google.protobuf.Timestamp start_timestamp = 6;
+  google.protobuf.Timestamp end_timestamp = 7;
+}
+
+enum PaymentDeviceStatus {
+  PAYMENT_DEVICE_STATUS_UNKNOWN = 0;
+  PAYMENT_DEVICE_STATUS_PENDING = 1;
+  PAYMENT_DEVICE_STATUS_ACTIVE = 2;
+  PAYMENT_DEVICE_STATUS_INACTIVE = 3;
+}
+
+enum PaymentDeviceLinkStatus {
+  PAYMENT_DEVICE_LINK_STATUS_UNKNOWN = 0;
+  PAYMENT_DEVICE_LINK_STATUS_ACTIVE = 1;
+  PAYMENT_DEVICE_LINK_STATUS_INACTIVE = 2;
+}

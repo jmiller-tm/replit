@@ -1,0 +1,41 @@
+syntax = "proto3";
+
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+import "common_protos_version.proto";
+import "vault_kernel_core_api_proto_v1_plans_core_api_plans.proto";
+
+package core_stream_api_events.v1.plans;
+
+message PlanEvent {
+  string event_id = 1;
+  google.protobuf.Timestamp timestamp = 2;
+  version.SemVer vault_version = 3;
+  int64 change_id = 4;
+
+  oneof event { PlanCreatedEvent plan_created = 5; }
+}
+
+message PlanCreatedEvent { core_api.v1.plans.Plan plan = 1; }
+
+message AccountPlanAssocEvent {
+  string event_id = 1;
+  google.protobuf.Timestamp timestamp = 2;
+  version.SemVer vault_version = 3;
+  int64 change_id = 4;
+
+  oneof event {
+    AccountPlanAssocCreatedEvent account_plan_assoc_created = 5;
+    AccountPlanAssocUpdatedEvent account_plan_assoc_updated = 6;
+  }
+}
+
+message AccountPlanAssocCreatedEvent {
+  core_api.v1.plans.AccountPlanAssoc account_plan_assoc = 1;
+}
+
+message AccountPlanAssocUpdatedEvent {
+  core_api.v1.plans.AccountPlanAssoc account_plan_assoc = 1;
+  google.protobuf.FieldMask update_mask = 2;
+}

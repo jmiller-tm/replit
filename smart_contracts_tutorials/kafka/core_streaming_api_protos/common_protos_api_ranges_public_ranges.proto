@@ -1,0 +1,17 @@
+
+
+syntax = "proto3";
+
+package ranges;
+
+import "google/protobuf/timestamp.proto";
+
+message TimestampRange {
+  google.protobuf.Timestamp from = 1;
+  google.protobuf.Timestamp to = 2;
+}
+
+message NumericStringRange {
+  string from = 1;
+  string to = 2;
+}

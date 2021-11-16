@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+
+import "common_protos_version.proto";
+
+package core_stream_api.v1.common;
+
+message TechnicalMetadata {
+  string event_id = 1;
+  google.protobuf.Timestamp capture_timestamp = 2;
+  version.SemVer vault_version = 3;
+  map<string, string> context = 4;
+}

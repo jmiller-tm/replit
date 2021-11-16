@@ -1,0 +1,54 @@
+
+syntax = "proto3";
+
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+import "common_protos_version.proto";
+
+import "vault_kernel_core_api_proto_v1_accounts_core_api_accounts.proto";
+import "vault_kernel_core_api_proto_v1_accounts_common_core_api_accounts_common.proto";
+import "vault_kernel_core_api_proto_v1_common_core_stream_api_common.proto";
+
+package core_stream_api.v1.accounts;
+
+message AccountCreatedEvent {
+  core_api.v1.accounts.Account account = 1;
+  core_stream_api.v1.common.TechnicalMetadata technical_metadata = 2;
+  google.protobuf.FieldMask update_mask = 3;
+}
+
+message AccountStatusUpdatedEvent {
+  string id = 1;
+  core_api.v1.accounts_common.AccountStatus status = 2;
+  core_stream_api.v1.common.TechnicalMetadata technical_metadata = 3;
+}
+
+message AccountInstanceParamValsUpdatedEvent {
+  string id = 1;
+  map<string, string> instance_param_vals = 2;
+  core_stream_api.v1.common.TechnicalMetadata technical_metadata = 3;
+  core_api.v1.accounts.AccountUpdateStatus update_status = 4;
+}
+
+message AccountUpdateCreatedEvent {
+  core_api.v1.accounts.AccountUpdate account_update = 1;
+  core_stream_api.v1.common.TechnicalMetadata technical_metadata = 2;
+  google.protobuf.FieldMask update_mask = 3;
+}
+
+message AccountDetailsUpdatedEvent {
+  string id = 1;
+  core_stream_api.v1.common.TechnicalMetadata technical_metadata = 2;
+  map<string, string> account_details = 3;
+}
+
+message AccountScheduleJobExecutionFailureEvent {
+  string event_id = 1;
+  google.protobuf.Timestamp timestamp = 2;
+  version.SemVer vault_version = 3;
+  string account_id = 4;
+  string event_type = 5;
+  string job_id = 6;
+  string failure_reason = 7;
+}

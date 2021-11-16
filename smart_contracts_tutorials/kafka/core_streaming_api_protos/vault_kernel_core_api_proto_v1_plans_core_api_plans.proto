@@ -1,0 +1,212 @@
+syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+
+import "common_protos_api_ranges_public_ranges.proto";
+
+package core_api.v1.plans;
+
+message Plan {
+  string id = 1;
+  string supervisor_contract_version_id = 2;
+  google.protobuf.Timestamp create_timestamp = 3;
+  PlanStatus status = 4;
+  google.protobuf.Timestamp opening_timestamp = 6;
+  google.protobuf.Timestamp activation_completed_timestamp = 7;
+  google.protobuf.Timestamp closing_timestamp = 8;
+  google.protobuf.Timestamp closure_completed_timestamp = 9;
+  map<string, string> details = 5;
+}
+
+enum PlanStatus {
+  reserved 4;
+  PLAN_STATUS_UNKNOWN = 0;
+  PLAN_STATUS_PENDING = 1;
+  PLAN_STATUS_OPEN = 2;
+  PLAN_STATUS_CLOSED = 3;
+}
+
+message CreatePlanRequest {
+  string request_id = 1;
+  Plan plan = 2;
+}
+
+message BatchGetPlansRequest { repeated string ids = 1; }
+
+message BatchGetPlansResponse { map<string, Plan> plans = 1; }
+
+message BatchGetAccountPlanAssocsRequest { repeated string ids = 1; }
+
+message BatchGetAccountPlanAssocsResponse {
+  map<string, AccountPlanAssoc> account_plan_assocs = 1;
+}
+
+message ListAccountPlanAssocsRequest {
+  repeated string account_ids = 1;
+  repeated string plan_ids = 2;
+  ranges.TimestampRange start_timestamp_range = 3;
+  ranges.TimestampRange end_timestamp_range = 4;
+  uint32 page_size = 5;
+  string page_token = 6;
+}
+
+message ListAccountPlanAssocsResponse {
+  repeated AccountPlanAssoc account_plan_assocs = 1;
+  string previous_page_token = 2;
+  string next_page_token = 3;
+}
+
+message AccountPlanAssoc {
+  string id = 1;
+  string account_id = 2;
+  string plan_id = 3;
+  google.protobuf.Timestamp create_timestamp = 4;
+  google.protobuf.Timestamp start_timestamp = 5;
+  google.protobuf.Timestamp end_timestamp = 6;
+  AccountPlanAssocStatus status = 7;
+}
+
+enum AccountPlanAssocStatus {
+  ACCOUNT_PLAN_ASSOC_STATUS_UNKNOWN = 0;
+  ACCOUNT_PLAN_ASSOC_STATUS_ACTIVE = 1;
+  ACCOUNT_PLAN_ASSOC_STATUS_INACTIVE = 2;
+}
+
+message CreatePlanUpdateRequest {
+  string request_id = 1;
+  PlanUpdate plan_update = 2;
+}
+
+message BatchGetPlanUpdatesRequest { repeated string ids = 1; }
+
+message BatchGetPlanUpdatesResponse {
+  map<string, PlanUpdate> plan_updates = 1;
+}
+
+message ListPlanUpdatesRequest {
+  repeated string plan_ids = 1;
+
+  repeated string job_ids = 5;
+
+  repeated PlanUpdateStatus statuses = 2;
+  uint32 page_size = 3;
+  string page_token = 4;
+}
+
+message ListPlanUpdatesResponse {
+  repeated PlanUpdate plan_updates = 1;
+  string previous_page_token = 2;
+  string next_page_token = 3;
+}
+
+message ListPlanSchedulesRequest {
+  string plan_id = 1;
+  uint32 page_size = 2;
+  string page_token = 3;
+}
+
+message ListPlanSchedulesResponse {
+  repeated PlanSchedule plan_schedules = 1;
+  string previous_page_token = 2;
+  string next_page_token = 3;
+}
+
+message PlanUpdate {
+  string id = 1;
+  string plan_id = 2;
+
+  string job_id = 12;
+  PlanUpdateStatus status = 3;
+  oneof update {
+    AssociateAccountUpdate associate_account_update = 4;
+    DisassociateAccountUpdate disassociate_account_update = 5;
+    ActivationUpdate activation_update = 9;
+    SupervisorContractVersionUpdate supervisor_contract_version_update = 10;
+    ClosureUpdate closure_update = 11;
+  }
+  google.protobuf.Timestamp create_timestamp = 6;
+  google.protobuf.Timestamp last_status_update_timestamp = 7;
+  string failure_reason = 8;
+}
+
+message PlanSchedule {
+  string id = 1;
+  string plan_id = 2;
+  string name = 3;
+  string group_name = 4;
+  string time_expression = 5;
+  repeated string schedule_tag_ids = 6;
+}
+
+enum PlanUpdateStatus {
+  PLAN_UPDATE_STATUS_UNKNOWN = 0;
+  PLAN_UPDATE_STATUS_PENDING_EXECUTION = 1;
+  PLAN_UPDATE_STATUS_COMPLETED = 2;
+  PLAN_UPDATE_STATUS_REJECTED = 3;
+  PLAN_UPDATE_STATUS_ERRORED = 4;
+}
+
+message AssociateAccountUpdate { string account_id = 1; }
+
+message DisassociateAccountUpdate { string account_plan_assoc_id = 1; }
+
+message ActivationUpdate {}
+
+message ClosureUpdate {}
+
+message SupervisorContractVersionUpdate {
+  string supervisor_contract_version_id = 1;
+  ScheduleMigrationType schedule_migration_type = 3;
+}
+
+enum ScheduleMigrationType {
+  SCHEDULE_MIGRATION_TYPE_RECREATE_ALL_SCHEDULES_AND_GROUPS = 0;
+  SCHEDULE_MIGRATION_TYPE_PRESERVE_SCHEDULES_IF_NO_GROUP_CHANGES = 1;
+}
+
+message PlanMigration {
+  reserved 6;
+  string id = 1;
+  PlanMigrationStatus status = 2;
+  oneof migration {
+    SupervisorContractVersionMigration supervisor_contract_version_migration =
+        3;
+  }
+  google.protobuf.Timestamp create_timestamp = 4;
+  google.protobuf.Timestamp last_status_update_timestamp = 5;
+}
+
+message SupervisorContractVersionMigration {
+  repeated string from_supervisor_contract_version_ids = 1;
+  string to_supervisor_contract_version_id = 2;
+  ScheduleMigrationType schedule_migration_type = 3;
+}
+
+enum PlanMigrationStatus {
+  PLAN_MIGRATION_STATUS_UNKNOWN = 0;
+  PLAN_MIGRATION_STATUS_PENDING_EXECUTION = 1;
+  PLAN_MIGRATION_STATUS_COMPLETED = 2;
+}
+
+message CreatePlanMigrationRequest {
+  string request_id = 1;
+  PlanMigration plan_migration = 2;
+}
+
+message BatchGetPlanMigrationsRequest { repeated string ids = 1; }
+
+message BatchGetPlanMigrationsResponse {
+  map<string, PlanMigration> plan_migrations = 1;
+}
+
+message ListPlanMigrationsRequest {
+  repeated PlanMigrationStatus statuses = 1;
+  uint32 page_size = 2;
+  string page_token = 3;
+}
+
+message ListPlanMigrationsResponse {
+  repeated PlanMigration plan_migrations = 1;
+  string previous_page_token = 2;
+  string next_page_token = 3;
+}

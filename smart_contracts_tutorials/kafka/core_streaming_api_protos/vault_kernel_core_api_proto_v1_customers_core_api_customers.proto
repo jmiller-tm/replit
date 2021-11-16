@@ -1,0 +1,172 @@
+syntax = "proto3";
+
+package core_api.v1.customers;
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/field_mask.proto";
+
+import "vault_kernel_core_api_proto_v1_auth_core_api_auth.proto";
+
+message CreateCustomerRequest {
+  string request_id = 1;
+  Customer customer = 2;
+}
+
+message UpdateCustomerRequest {
+  string request_id = 1;
+  Customer customer = 2;
+  google.protobuf.FieldMask update_mask = 3;
+}
+
+message GetCustomerRequest { string id = 1; }
+
+message BatchGetCustomersRequest { repeated string ids = 1; }
+
+message BatchGetCustomersResponse { map<string, Customer> customers = 1; }
+
+message ListCustomersRequest {
+  reserved 2, 6;
+  repeated CustomerStatus statuses = 1;
+  repeated string email_identifiers = 5;
+  repeated string phone_identifiers = 7;
+  repeated string username_identifiers = 8;
+  string date_of_birth = 9;
+  string first_name = 10;
+  string last_name = 11;
+  string email = 12;
+  string external_id = 13;
+
+  uint32 page_size = 3;
+  string page_token = 4;
+}
+
+message ListCustomersResponse {
+  repeated Customer customers = 1;
+  string next_page_token = 2;
+  string previous_page_token = 3;
+}
+
+message UpdateCustomerAdditionalDetailsRequest {
+  string request_id = 1;
+  string customer_id = 2;
+  map<string, string> items_to_add = 3;
+  repeated string items_to_remove = 4;
+}
+
+message Customer {
+  reserved 4, 6;
+  string id = 1;
+  CustomerStatus status = 2;
+  repeated core_api.v1.auth.Identifier identifiers = 3;
+  CustomerDetails customer_details = 5;
+  map<string, string> additional_details = 7;
+}
+
+enum CustomerStatus {
+  CUSTOMER_STATUS_UNKNOWN = 0;
+  CUSTOMER_STATUS_ACTIVE = 1;
+  CUSTOMER_STATUS_FROZEN = 2;
+  CUSTOMER_STATUS_DECEASED = 3;
+  CUSTOMER_STATUS_PROSPECT = 4;
+}
+
+message CreateCustomerAddressRequest {
+  reserved 2;
+  string request_id = 1;
+  CustomerAddress customer_address = 3;
+}
+
+message UpdateCustomerAddressRequest {
+  reserved 2;
+  string request_id = 1;
+  CustomerAddress customer_address = 4;
+  google.protobuf.FieldMask update_mask = 3;
+}
+
+message ListCustomerAddressesRequest {
+  string customer_id = 1;
+  bool include_previous = 2;
+  uint32 page_size = 3;
+  string page_token = 4;
+}
+
+message ListCustomerAddressesResponse {
+  reserved 1;
+  repeated CustomerAddress customer_addresses = 4;
+  string next_page_token = 2;
+  string previous_page_token = 3;
+}
+
+message CustomerAddress {
+  string id = 12;
+  string house_name = 1;
+  string street_number = 2;
+  string street = 3;
+  string local_municipality = 4;
+  string city = 5;
+  string postal_area = 6;
+  string governing_district = 7;
+  string country = 8;
+  CustomerAddressType address_type = 9;
+  google.protobuf.Timestamp start_timestamp = 10;
+  google.protobuf.Timestamp end_timestamp = 11;
+  string customer_id = 13;
+}
+
+enum CustomerAddressType {
+  CUSTOMER_ADDRESS_TYPE_UNKNOWN = 0;
+  CUSTOMER_ADDRESS_TYPE_PO_BOX = 1;
+  CUSTOMER_ADDRESS_TYPE_HOME = 2;
+  CUSTOMER_ADDRESS_TYPE_OFFICE = 3;
+  CUSTOMER_ADDRESS_TYPE_OTHER = 4;
+  CUSTOMER_ADDRESS_TYPE_CORRESPONDENCE = 5;
+}
+
+message CustomerDetails {
+  CustomerTitle title = 1;
+  string first_name = 2;
+  string middle_name = 3;
+  string last_name = 4;
+  string dob = 5;
+  CustomerGender gender = 6;
+  string nationality = 7;
+  string email_address = 8;
+  string mobile_phone_number = 9;
+  string home_phone_number = 10;
+  string business_phone_number = 11;
+  CustomerContactMethod contact_method = 12;
+  string country_of_residence = 13;
+  string country_of_taxation = 14;
+  CustomerAccessibility accessibility = 15;
+  string external_customer_id = 16;
+}
+
+enum CustomerTitle {
+  CUSTOMER_TITLE_UNKNOWN = 0;
+  CUSTOMER_TITLE_MISS = 1;
+  CUSTOMER_TITLE_MR = 2;
+  CUSTOMER_TITLE_MRS = 3;
+  CUSTOMER_TITLE_MS = 4;
+}
+
+enum CustomerGender {
+  CUSTOMER_GENDER_UNKNOWN = 0;
+  CUSTOMER_GENDER_FEMALE = 1;
+  CUSTOMER_GENDER_MALE = 2;
+}
+
+enum CustomerContactMethod {
+  CUSTOMER_CONTACT_METHOD_UNKNOWN = 0;
+  CUSTOMER_CONTACT_METHOD_NONE = 1;
+  CUSTOMER_CONTACT_METHOD_EMAIL = 2;
+  CUSTOMER_CONTACT_METHOD_SMS = 3;
+  CUSTOMER_CONTACT_METHOD_NOTIFICATION = 4;
+}
+
+enum CustomerAccessibility {
+  CUSTOMER_ACCESSIBILITY_UNKNOWN = 0;
+  CUSTOMER_ACCESSIBILITY_AUDIO = 1;
+  CUSTOMER_ACCESSIBILITY_LARGE_PRINT = 2;
+  CUSTOMER_ACCESSIBILITY_BRAILLE = 3;
+  CUSTOMER_ACCESSIBILITY_DEAF = 4;
+}

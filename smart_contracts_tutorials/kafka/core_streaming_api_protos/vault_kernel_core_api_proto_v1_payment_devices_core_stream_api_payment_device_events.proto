@@ -1,0 +1,52 @@
+syntax = "proto3";
+
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+import "common_protos_version.proto";
+
+import "vault_kernel_core_api_proto_v1_payment_devices_core_api_paymentdevices.proto";
+
+package core_stream_api_events.v1.payment_device;
+
+message PaymentDeviceEvent {
+  string event_id = 1;
+  google.protobuf.Timestamp timestamp = 2;
+  version.SemVer vault_version = 3;
+  int64 change_id = 4;
+
+  oneof event {
+    PaymentDeviceCreatedEvent payment_device_created = 5;
+    PaymentDeviceUpdatedEvent payment_device_updated = 6;
+  }
+}
+
+message PaymentDeviceCreatedEvent {
+  core_api.v1.payment_devices.PaymentDevice payment_device = 1;
+}
+
+message PaymentDeviceUpdatedEvent {
+  core_api.v1.payment_devices.PaymentDevice payment_device = 1;
+  google.protobuf.FieldMask update_mask = 2;
+}
+
+message PaymentDeviceLinkEvent {
+  string event_id = 1;
+  google.protobuf.Timestamp timestamp = 2;
+  version.SemVer vault_version = 3;
+  int64 change_id = 4;
+
+  oneof event {
+    PaymentDeviceLinkCreatedEvent payment_device_link_created = 5;
+    PaymentDeviceLinkUpdatedEvent payment_device_link_updated = 6;
+  }
+}
+
+message PaymentDeviceLinkCreatedEvent {
+  core_api.v1.payment_devices.PaymentDeviceLink payment_device_link = 1;
+}
+
+message PaymentDeviceLinkUpdatedEvent {
+  core_api.v1.payment_devices.PaymentDeviceLink payment_device_link = 1;
+  google.protobuf.FieldMask update_mask = 2;
+}

@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+
+package core_stream_api_events.v1.ledger_balances;
+
+message LedgerBalanceBucketReassignmentEvent {
+  string posting_instruction_batch_id = 1;
+  google.protobuf.Timestamp ledger_insertion_timestamp = 2;
+  google.protobuf.Timestamp bucket_timestamp = 3;
+}

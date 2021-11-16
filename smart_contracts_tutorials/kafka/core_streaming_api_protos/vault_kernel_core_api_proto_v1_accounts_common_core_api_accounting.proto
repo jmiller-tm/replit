@@ -1,0 +1,10 @@
+syntax = "proto3";
+
+package core_api.v1.accounting;
+
+enum Tside {
+  TSIDE_UNKNOWN = 0;
+  TSIDE_ASSET = 1;
+  TSIDE_LIABILITY = 2;
+  TSIDE_SETTLEMENT = 3;
+}

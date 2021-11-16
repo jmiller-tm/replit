@@ -1,0 +1,98 @@
+syntax = "proto3";
+
+package core_api.v1.balances;
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/descriptor.proto";
+
+import "vault_kernel_postings_api_proto_v1_api.proto";
+
+message ListBalancesLiveRequest {
+  repeated string account_ids = 1;
+  repeated string account_addresses = 2;
+  uint32 page_size = 3;
+  string page_token = 4;
+}
+
+message ListBalancesLiveResponse {
+  repeated balances.Balance balances = 1;
+  string previous_page_token = 2;
+  string next_page_token = 3;
+}
+
+message ListBalancesTimeRangeRequest {
+  repeated string account_ids = 1;
+  repeated string account_addresses = 2;
+  google.protobuf.Timestamp from_time = 3;
+  google.protobuf.Timestamp to_time = 4;
+  uint32 page_size = 5;
+  string page_token = 6;
+}
+
+message ListBalancesTimeRangeResponse {
+  repeated balances.Balance balances = 1;
+  string previous_page_token = 2;
+  string next_page_token = 3;
+}
+
+message ListBalancesRequest {
+
+  option deprecated = true;
+
+  string account_id = 1;
+  string posting_instruction_batch_id = 2;
+
+  message TimeRange {
+    google.protobuf.Timestamp from_value_time = 1;
+
+    google.protobuf.Timestamp to_value_time = 2;
+    bool exclude_starting_balance = 3;
+  }
+
+  TimeRange time_range = 3;
+  bool live = 4;
+
+  enum OrderBy {
+    ORDER_BY_VALUE_TIME_ASC = 0;
+    ORDER_BY_VALUE_TIME_DESC = 1;
+  }
+
+  repeated OrderBy order_by = 6;
+  uint32 page_size = 8;
+  string page_token = 9;
+}
+
+enum OrderByDirection {
+  ORDER_BY_ASC = 0;
+  ORDER_BY_DESC = 1;
+}
+
+message ListBalancesResponse {
+
+  option deprecated = true;
+
+  repeated Balance balances = 1;
+  string previous_page_token = 2;
+  string next_page_token = 3;
+}
+
+message Balance {
+  string id = 1;
+  string account_id = 2;
+  string account_address = 3;
+  posting_api.v1.PostingPhase phase = 4;
+  string asset = 5;
+  string denomination = 6;
+
+  string posting_instruction_batch_id = 7;
+
+  string update_posting_instruction_batch_id = 8;
+
+  google.protobuf.Timestamp value_time = 9;
+
+  string amount = 10;
+  string total_debit = 11;
+  string total_credit = 12;
+}
+
+message GetBalanceRequest { string id = 1; }

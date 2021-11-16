@@ -1,0 +1,176 @@
+syntax = "proto3";
+
+package core_api.v1.products;
+
+import "google/protobuf/timestamp.proto";
+
+import "common_protos_version.proto";
+
+import "vault_kernel_core_api_proto_v1_accounts_common_core_api_accounting.proto";
+import "vault_kernel_core_api_proto_v1_contract_modules_core_api_contract_modules.proto";
+import "vault_kernel_core_api_proto_v1_core_api_params.proto";
+
+message ListProductsRequest {
+  enum ActivityRefiner {
+    ACTIVITY_REFINER_ANY_ACTIVITY = 0;
+    ACTIVITY_REFINER_ACTIVE = 1;
+    ACTIVITY_REFINER_INACTIVE = 2;
+  }
+  ActivityRefiner include_activity = 1;
+
+  enum InternalityRefiner {
+    INTERNALITY_REFINER_ANY_INTERNALITY = 0;
+    INTERNALITY_REFINER_INTERNAL = 1;
+    INTERNALITY_REFINER_EXTERNAL = 2;
+  }
+  InternalityRefiner include_internality = 2;
+  uint32 page_size = 3;
+  string page_token = 4;
+}
+
+message ListProductsResponse {
+  repeated Product products = 1;
+
+  string previous_page_token = 2;
+  string next_page_token = 3;
+}
+
+message BatchGetProductsRequest { repeated string ids = 1; }
+
+message BatchGetProductsResponse { map<string, Product> products = 1; }
+
+message ListProductVersionsRequest {
+  string product_id = 1;
+  ProductVersionView view = 2;
+  uint32 page_size = 3;
+  string page_token = 4;
+}
+
+message ListProductVersionsResponse {
+  repeated ProductVersion product_versions = 1;
+
+  string previous_page_token = 2;
+  string next_page_token = 3;
+}
+
+message BatchGetProductVersionsRequest {
+  repeated string ids = 1;
+  ProductVersionView view = 2;
+}
+
+message BatchGetProductVersionsResponse {
+  map<string, ProductVersion> product_versions = 1;
+}
+
+message CreateProductVersionRequest {
+  string request_id = 1;
+  ProductVersion product_version = 2;
+  ProductVersionMigrationStrategy migration_strategy = 3;
+  bool is_internal = 4;
+}
+
+message UpdateProductVersionParamsRequest {
+  string product_version_id = 1;
+  string request_id = 2;
+
+  repeated core_api.v1.params.Param items_to_add = 3;
+
+  repeated core_api.v1.params.Param items_to_remove = 4;
+}
+
+enum ProductVersionView {
+  PRODUCT_VERSION_VIEW_BASIC = 0;
+  PRODUCT_VERSION_VIEW_INCLUDE_TAGS = 1;
+  PRODUCT_VERSION_VIEW_INCLUDE_PARAMETERS = 2;
+  PRODUCT_VERSION_VIEW_INCLUDE_CODE = 3;
+}
+
+message Product {
+  string id = 1;
+  string display_name = 2;
+  bool is_active = 3;
+  bool is_internal = 4;
+  string current_version_id = 5;
+}
+
+message ProductVersion {
+  reserved 10, 11;
+  string id = 1;
+  string display_name = 2;
+  version.SemVer display_version_number = 3;
+  google.protobuf.Timestamp create_timestamp = 4;
+  bool is_current = 5;
+  string description = 6;
+  string summary = 7;
+  repeated ProductVersionFeature features = 8;
+  string wallet_provider = 9;
+  repeated string tags = 12;
+  repeated ProductVersionCoreTag core_tags = 13;
+  repeated core_api.v1.params.Param params = 14;
+  string code = 15;
+  string product_id = 16;
+  core_api.v1.accounting.Tside tside = 17;
+  repeated string supported_denominations = 18;
+  repeated AddressDetails address_details = 19;
+  ContractModuleDetails contract_module_details = 20;
+  string entity_id = 21;
+}
+
+message ContractModuleDetails {
+  map<string, core_api.v1.contract_modules.SharedFunctionDetails>
+      alias_to_shared_function_details = 1;
+}
+
+message AddressDetails {
+  string address_name = 1;
+  string description = 2;
+  repeated string tags = 3;
+}
+
+message ListProductVersionParametersTimeseriesRequest {
+  string product_version_id = 1;
+}
+
+message ListProductVersionParametersTimeseriesResponse {
+  repeated ParameterTimeseries product_version_param_timeseries = 1;
+}
+
+message ParameterTimeseries {
+  string param_name = 1;
+  repeated ParamValue values = 2;
+}
+
+message ParamValue {
+  string value = 1;
+  google.protobuf.Timestamp effective_from_timestamp = 2;
+}
+
+enum ProductVersionFeature {
+  PRODUCT_VERSION_FEATURE_UNKNOWN = 0;
+  PRODUCT_VERSION_FEATURE_MANDATES = 1;
+  PRODUCT_VERSION_FEATURE_MULTIPLE_OWNERS = 2;
+  PRODUCT_VERSION_FEATURE_CARD = 3;
+  PRODUCT_VERSION_FEATURE_SUB_ACCOUNTS = 4;
+  PRODUCT_VERSION_FEATURE_JOINT_ACCOUNT = 5;
+  PRODUCT_VERSION_FEATURE_INVESTMENT = 6;
+}
+
+enum ProductVersionMigrationStrategy {
+  PRODUCT_VERSION_MIGRATION_STRATEGY_UNKNOWN = 0;
+  PRODUCT_VERSION_MIGRATION_STRATEGY_NEW_PRODUCT = 1;
+  PRODUCT_VERSION_MIGRATION_STRATEGY_ADD_VERSION = 2;
+  PRODUCT_VERSION_MIGRATION_STRATEGY_ADD_VERSION_APPLY_NEW_USERS = 3;
+  PRODUCT_VERSION_MIGRATION_STRATEGY_ADD_VERSION_ASK_EXISTING_USERS = 4;
+  PRODUCT_VERSION_MIGRATION_STRATEGY_ADD_VERSION_AUTO_MIGRATE_USERS = 5;
+  PRODUCT_VERSION_MIGRATION_STRATEGY_ADD_VERSION_UPGRADE_INTERNAL_ACCOUNTS = 6;
+}
+
+enum ProductVersionCoreTag {
+  PRODUCT_VERSION_CORE_TAG_UNKNOWN = 0;
+  PRODUCT_VERSION_CORE_TAG_DEPOSIT = 1;
+  PRODUCT_VERSION_CORE_TAG_FIXED_TERM_DEPOSIT = 2;
+  PRODUCT_VERSION_CORE_TAG_SAVING = 3;
+  PRODUCT_VERSION_CORE_TAG_LOAN = 4;
+  PRODUCT_VERSION_CORE_TAG_CREDIT = 5;
+  PRODUCT_VERSION_CORE_TAG_MORTGAGE = 6;
+}

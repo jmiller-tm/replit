@@ -1,0 +1,22 @@
+
+syntax = "proto3";
+
+import "google/protobuf/field_mask.proto";
+
+import "vault_kernel_core_api_proto_v1_core_api_params.proto";
+import "vault_kernel_core_api_proto_v1_products_core_api_products.proto";
+import "vault_kernel_core_api_proto_v1_common_core_stream_api_common.proto";
+
+package core_stream_api.v1.products;
+
+message ProductVersionCreatedEvent {
+  core_api.v1.products.ProductVersion product_version = 1;
+  core_stream_api.v1.common.TechnicalMetadata technical_metadata = 2;
+  google.protobuf.FieldMask update_mask = 3;
+}
+
+message ProductVersionParameterUpdatedEvent {
+  string id = 1;
+  core_api.v1.params.Param param = 2;
+  core_stream_api.v1.common.TechnicalMetadata technical_metadata = 3;
+}

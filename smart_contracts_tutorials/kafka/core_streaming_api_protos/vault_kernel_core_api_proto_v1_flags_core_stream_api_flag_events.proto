@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+import "common_protos_version.proto";
+
+import "vault_kernel_core_api_proto_v1_flags_core_api_flags.proto";
+
+package core_stream_api_events.v1.flag;
+
+message FlagEvent {
+  string event_id = 1;
+  google.protobuf.Timestamp timestamp = 2;
+  version.SemVer vault_version = 3;
+  int64 change_id = 4;
+
+  oneof event {
+    FlagCreatedEvent flag_created = 5;
+    FlagUpdatedEvent flag_updated = 6;
+  }
+}
+
+message FlagCreatedEvent { core_api.v1.flags.Flag flag = 1; }
+
+message FlagUpdatedEvent {
+  core_api.v1.flags.Flag flag = 1;
+  google.protobuf.FieldMask update_mask = 2;
+}

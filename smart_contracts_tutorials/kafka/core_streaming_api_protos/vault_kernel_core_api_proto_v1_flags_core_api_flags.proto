@@ -1,0 +1,107 @@
+syntax = "proto3";
+
+package core_api.v1.flags;
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/field_mask.proto";
+
+import "common_protos_api_ranges_public_ranges.proto";
+
+message CreateFlagDefinitionRequest {
+  FlagDefinition flag_definition = 1;
+  string request_id = 2;
+}
+
+message UpdateFlagDefinitionRequest {
+  FlagDefinition flag_definition = 1;
+  string request_id = 2;
+  google.protobuf.FieldMask update_mask = 3;
+}
+
+message ListFlagDefinitionsRequest {
+  FlagVisibility flag_visibility_level = 1;
+  repeated FlagLevel flag_levels = 2;
+  bool include_inactive = 3;
+  uint32 page_size = 4;
+  string page_token = 5;
+}
+
+message ListFlagDefinitionsResponse {
+  repeated FlagDefinition flag_definitions = 1;
+  string previous_page_token = 2;
+  string next_page_token = 3;
+}
+
+message BatchGetFlagDefinitionsRequest { repeated string ids = 1; }
+
+message BatchGetFlagDefinitionsResponse {
+  map<string, FlagDefinition> flag_definitions = 1;
+}
+
+message CreateFlagRequest {
+  Flag flag = 1;
+  string request_id = 2;
+}
+
+message UpdateFlagRequest {
+  Flag flag = 1;
+  string request_id = 2;
+  google.protobuf.FieldMask update_mask = 3;
+}
+
+message ListFlagsRequest {
+  string flag_definition_id = 1;
+  repeated string customer_ids = 2;
+  repeated string account_ids = 3;
+  repeated string payment_device_ids = 4;
+  FlagVisibility flag_visibility_level = 5;
+  google.protobuf.Timestamp effective_timestamp = 6;
+  ranges.TimestampRange effective_timestamp_range = 10;
+  bool include_inactive = 7;
+  uint32 page_size = 8;
+  string page_token = 9;
+}
+
+message ListFlagsResponse {
+  repeated Flag flags = 1;
+  string previous_page_token = 2;
+  string next_page_token = 3;
+}
+
+message FlagDefinition {
+  string id = 1;
+  string name = 2;
+  string description = 3;
+  FlagLevel required_flag_level = 4;
+  google.protobuf.Timestamp create_timestamp = 5;
+  FlagVisibility flag_visibility = 6;
+  bool is_active = 7;
+}
+
+message Flag {
+  string id = 1;
+  string flag_definition_id = 2;
+  oneof entity_id {
+    string customer_id = 3;
+    string account_id = 4;
+    string payment_device_id = 5;
+  }
+  string description = 6;
+  google.protobuf.Timestamp creation_timestamp = 11;
+  google.protobuf.Timestamp effective_timestamp = 7;
+  google.protobuf.Timestamp expiry_timestamp = 8;
+  bool is_active = 9;
+}
+
+enum FlagLevel {
+  FLAG_LEVEL_UNKNOWN = 0;
+  FLAG_LEVEL_CUSTOMER = 1;
+  FLAG_LEVEL_ACCOUNT = 2;
+  FLAG_LEVEL_PAYMENT_DEVICE = 3;
+}
+
+enum FlagVisibility {
+  FLAG_VISIBILITY_UNKNOWN = 0;
+  FLAG_VISIBILITY_CONTRACT = 1;
+  FLAG_VISIBILITY_OPERATOR = 2;
+}

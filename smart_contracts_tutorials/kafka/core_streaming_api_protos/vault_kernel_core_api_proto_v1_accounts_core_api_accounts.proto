@@ -1,0 +1,287 @@
+syntax = "proto3";
+
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+import "common_protos_api_ranges_public_ranges.proto";
+
+import "vault_kernel_core_api_proto_v1_accounts_common_core_api_accounts_common.proto";
+import "vault_kernel_core_api_proto_v1_common_core_api_common.proto";
+import "vault_kernel_core_api_proto_v1_core_api_params.proto";
+
+package core_api.v1.accounts;
+
+message ListAccountParamTimeseriesRequest { string account_id = 1; }
+
+message ListAccountParamTimeseriesResponse {
+  repeated ParameterTimeseries account_param_timeseries = 1;
+  repeated ParameterTimeseries product_version_param_timeseries = 2;
+  repeated ParameterTimeseries global_param_timeseries = 3;
+}
+
+message ParameterTimeseries {
+  string param_name = 1;
+  repeated ParamValue values = 2;
+}
+
+message ParamValue {
+  string value = 1;
+  google.protobuf.Timestamp effective_timestamp = 2;
+}
+
+message ListAccountsRequest {
+  reserved 1;
+  string stakeholder_id = 5;
+  AccountView view = 2;
+  uint32 page_size = 3;
+  string page_token = 4;
+  repeated core_api.v1.accounts_common.AccountStatus account_statuses = 6;
+  repeated string product_version_ids = 7;
+  ranges.TimestampRange opening_timestamp_range = 8;
+  ranges.TimestampRange closing_timestamp_range = 9;
+}
+
+message ListAccountsResponse {
+  repeated Account accounts = 1;
+  string previous_page_token = 2;
+  string next_page_token = 3;
+}
+
+message GetAccountRequest {
+  string id = 1;
+  AccountView view = 2;
+  enum IncludeField { INCLUDE_FIELD_DERIVED_INSTANCE_PARAM_VALS = 0; }
+  repeated IncludeField fields_to_include = 4;
+  google.protobuf.Timestamp instance_param_vals_effective_timestamp = 3;
+}
+
+message CreateAccountRequest {
+  string request_id = 1;
+  Account account = 2;
+}
+
+message UpdateAccountRequest {
+  string request_id = 1;
+  Account account = 2;
+  google.protobuf.FieldMask update_mask = 3;
+  core_api.v1.common.Overrides overrides = 4;
+}
+
+message CreateAccountUpdateRequest {
+  string request_id = 1;
+  AccountUpdate account_update = 2;
+}
+
+message GetAccountUpdateRequest { string id = 1; }
+
+message BatchGetAccountUpdatesRequest { repeated string ids = 1; }
+
+message BatchGetAccountUpdatesResponse {
+  map<string, AccountUpdate> account_updates = 1;
+}
+
+message CreateAccountUpdateBatchRequest {
+  string request_id = 1;
+  AccountUpdateBatch account_update_batch = 2;
+  AccountUpdateBatchCreateOptions create_options = 3;
+}
+
+message AccountUpdateBatchCreateOptions {
+  InvalidAccountUpdateHandlingType invalid_account_update_handling_type = 1;
+}
+
+enum InvalidAccountUpdateHandlingType {
+  INVALID_ACCOUNT_UPDATE_HANDLING_TYPE_FAIL_BATCH = 0;
+  INVALID_ACCOUNT_UPDATE_HANDLING_TYPE_FAIL_INVALID_UPDATES_ONLY = 1;
+  INVALID_ACCOUNT_UPDATE_HANDLING_TYPE_IGNORE_INVALID_UPDATES = 2;
+}
+
+message BatchGetAccountUpdateBatchesRequest { repeated string ids = 1; }
+
+message BatchGetAccountUpdateBatchesResponse {
+  map<string, AccountUpdateBatch> account_update_batches = 1;
+}
+
+message ListAccountUpdateBatchesRequest {
+  repeated string account_migration_ids = 1;
+  uint32 page_size = 3;
+  string page_token = 4;
+}
+
+message ListAccountUpdateBatchesResponse {
+  repeated AccountUpdateBatch account_update_batches = 1;
+  string previous_page_token = 2;
+  string next_page_token = 3;
+}
+
+message CreateAccountMigrationRequest {
+  string request_id = 1;
+  AccountMigration account_migration = 2;
+}
+
+message BatchGetAccountMigrationsRequest { repeated string ids = 1; }
+
+message BatchGetAccountMigrationsResponse {
+  map<string, AccountMigration> account_migrations = 1;
+}
+
+message ListAccountMigrationsRequest {
+  repeated AccountMigrationStatus statuses = 2;
+  uint32 page_size = 3;
+  string page_token = 4;
+}
+
+message ListAccountMigrationsResponse {
+  repeated AccountMigration account_migrations = 1;
+  string previous_page_token = 2;
+  string next_page_token = 3;
+}
+
+message UpdateAccountMigrationRequest {
+  string request_id = 1;
+  AccountMigration account_migration = 2;
+  google.protobuf.FieldMask update_mask = 3;
+}
+
+message ListAccountUpdatesRequest {
+  string account_id = 1;
+  repeated AccountUpdateStatus statuses = 2;
+  repeated string job_ids = 5;
+  uint32 page_size = 3;
+  string page_token = 4;
+}
+
+message ListAccountUpdatesResponse {
+  repeated AccountUpdate account_updates = 1;
+  string previous_page_token = 2;
+  string next_page_token = 3;
+}
+
+message UpdateAccountDetailsRequest {
+  string account_id = 1;
+  string request_id = 2;
+  map<string, string> items_to_add = 3;
+  repeated string items_to_remove = 4;
+}
+
+message ListAccountScheduleAssocsRequest {
+  string account_id = 1;
+  uint32 page_size = 2;
+  string page_token = 3;
+}
+
+message ListAccountScheduleAssocsResponse {
+  repeated AccountScheduleAssoc account_schedule_assocs = 1;
+  string previous_page_token = 2;
+  string next_page_token = 3;
+}
+
+message GetAccountScheduleAssocRequest { string id = 1; }
+
+enum AccountView {
+  reserved 1;
+  ACCOUNT_VIEW_BASIC = 0;
+  ACCOUNT_VIEW_INCLUDE_DERIVED_PARAMETERS = 2;
+}
+
+message Account {
+  reserved 5, 6, 9, 13, 14;
+  string id = 1;
+  string name = 2;
+  string product_id = 3;
+  string product_version_id = 4;
+  repeated string permitted_denominations = 7;
+  core_api.v1.accounts_common.AccountStatus status = 8;
+  google.protobuf.Timestamp opening_timestamp = 16;
+  google.protobuf.Timestamp closing_timestamp = 18;
+  repeated string stakeholder_ids = 10;
+  map<string, string> instance_param_vals = 11;
+  map<string, string> derived_instance_param_vals = 17;
+  map<string, string> details = 12;
+  core_api.v1.accounts_common.Accounting accounting = 15;
+}
+
+message AccountUpdate {
+  string id = 1;
+  string account_id = 2;
+  AccountUpdateStatus status = 3;
+  oneof update {
+    InstanceParamValsUpdate instance_param_vals_update = 4;
+    ProductVersionUpdate product_version_update = 7;
+    ActivationUpdate activation_update = 9;
+    ClosureUpdate closure_update = 10;
+  }
+  google.protobuf.Timestamp create_timestamp = 5;
+  google.protobuf.Timestamp last_status_update_timestamp = 6;
+  string account_update_batch_id = 8;
+  string job_id = 12;
+  string failure_reason = 11;
+}
+
+enum AccountUpdateStatus {
+  ACCOUNT_UPDATE_STATUS_UNKNOWN = 0;
+  ACCOUNT_UPDATE_STATUS_PENDING_EXECUTION = 1;
+  ACCOUNT_UPDATE_STATUS_COMPLETED = 2;
+  ACCOUNT_UPDATE_STATUS_REJECTED = 3;
+  ACCOUNT_UPDATE_STATUS_ERRORED = 4;
+}
+
+message InstanceParamValsUpdate { map<string, string> instance_param_vals = 1; }
+
+message ProductVersionUpdate {
+  string product_version_id = 1;
+  map<string, string> instance_param_vals_to_add = 2;
+  ScheduleMigrationType schedule_migration_type = 3;
+}
+
+message ActivationUpdate {}
+
+message ClosureUpdate {}
+
+message AccountUpdateBatch {
+  string id = 1;
+  repeated AccountUpdate account_updates = 2;
+  AccountUpdateBatchStatus status = 3;
+  string account_migration_id = 4;
+  google.protobuf.Timestamp create_timestamp = 5;
+}
+
+enum AccountUpdateBatchStatus {
+  ACCOUNT_UPDATE_BATCH_STATUS_UNKNOWN = 0;
+  ACCOUNT_UPDATE_BATCH_STATUS_PENDING_EXECUTION = 1;
+  ACCOUNT_UPDATE_BATCH_STATUS_COMPLETED = 2;
+}
+
+message AccountMigration {
+  reserved 7;
+  string id = 1;
+  AccountMigrationStatus status = 3;
+  oneof migration { ProductVersionMigration product_version_migration = 4; }
+  google.protobuf.Timestamp create_timestamp = 5;
+  google.protobuf.Timestamp last_status_update_timestamp = 6;
+}
+
+message ProductVersionMigration {
+  repeated string from_product_version_ids = 1;
+  string to_product_version_id = 2;
+  ScheduleMigrationType schedule_migration_type = 3;
+}
+
+enum AccountMigrationStatus {
+  ACCOUNT_MIGRATION_STATUS_UNKNOWN = 0;
+  ACCOUNT_MIGRATION_STATUS_PENDING_EXECUTION = 1;
+  ACCOUNT_MIGRATION_STATUS_PAUSED = 2;
+  ACCOUNT_MIGRATION_STATUS_COMPLETED = 3;
+}
+
+message AccountScheduleAssoc {
+  string id = 1;
+  string account_id = 2;
+  string schedule_id = 3;
+  google.protobuf.Timestamp create_timestamp = 4;
+}
+
+enum ScheduleMigrationType {
+  SCHEDULE_MIGRATION_TYPE_RECREATE_ALL_SCHEDULES_AND_GROUPS = 0;
+  SCHEDULE_MIGRATION_TYPE_PRESERVE_SCHEDULES_IF_NO_GROUP_CHANGES = 1;
+}

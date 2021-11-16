@@ -1,0 +1,56 @@
+syntax = "proto3";
+
+package scheduler.jobs;
+
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+enum JobStatus {
+  JOB_STATUS_UNKNOWN = 0;
+  JOB_STATUS_PUBLISHED = 1;
+  JOB_STATUS_SUCCEEDED = 2;
+  JOB_STATUS_FAILED = 3;
+  JOB_STATUS_SKIPPED = 4;
+  JOB_STATUS_READY = 5;
+  JOB_STATUS_IN_PROGRESS = 6;
+  JOB_STATUS_CANCELLED = 7;
+}
+
+message Job {
+  string id = 1;
+  string schedule_id = 2;
+  google.protobuf.Timestamp scheduled_timestamp = 3;
+  google.protobuf.Timestamp published_timestamp = 4;
+  JobStatus status = 5;
+  JobMetadata metadata = 6;
+  google.protobuf.Timestamp completed_timestamp = 7;
+}
+
+message JobTrigger {
+  Job job = 1;
+  bytes payload = 2;
+  google.protobuf.Timestamp time_cursor = 3;
+  string timezone = 4;
+}
+
+message JobMetadata {
+  string service_event_name = 1;
+  string description = 2;
+  google.protobuf.Timestamp event_timestamp = 3;
+}
+
+message JobOutcome {
+  string job_id = 1;
+  JobStatus status = 2;
+  JobMetadata metadata = 3;
+}
+
+message JobOutstanding {
+  string id = 1;
+  string schedule_id = 2;
+  google.protobuf.Timestamp scheduled_timestamp = 3;
+  google.protobuf.Timestamp trigger_timestamp = 4;
+  google.protobuf.Timestamp enqueued_timestamp = 5;
+  string schedule_group_id = 6;
+  uint32 schedule_group_order = 7;
+}

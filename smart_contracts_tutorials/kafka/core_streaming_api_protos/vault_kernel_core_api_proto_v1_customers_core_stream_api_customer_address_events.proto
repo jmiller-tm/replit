@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+import "common_protos_version.proto";
+
+import "vault_kernel_core_api_proto_v1_customers_core_api_customers.proto";
+
+package core_stream_api_events.v1.customer_address;
+
+message CustomerAddressEvent {
+  string event_id = 1;
+  google.protobuf.Timestamp timestamp = 2;
+  version.SemVer vault_version = 3;
+  int64 change_id = 4;
+
+  oneof event {
+    CustomerAddressCreatedEvent customer_address_created = 5;
+    CustomerAddressUpdatedEvent customer_address_updated = 6;
+  }
+}
+
+message CustomerAddressCreatedEvent {
+  core_api.v1.customers.CustomerAddress customer_address = 1;
+}
+
+message CustomerAddressUpdatedEvent {
+  core_api.v1.customers.CustomerAddress customer_address = 1;
+  google.protobuf.FieldMask update_mask = 2;
+}

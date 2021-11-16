@@ -1,0 +1,30 @@
+syntax = "proto3";
+
+import "vault_kernel_core_api_proto_v1_payment_orders_core_api_payment_orders.proto";
+import "vault_kernel_core_api_proto_v1_common_core_stream_api_common.proto";
+import "google/protobuf/timestamp.proto";
+import "common_protos_version.proto";
+import "google/protobuf/field_mask.proto";
+
+package core_stream_api.v1.payment_order;
+
+message PaymentOrderEvent {
+  string event_id = 1;
+  google.protobuf.Timestamp timestamp = 2;
+  version.SemVer vault_version = 3;
+  int64 change_id = 4;
+
+  oneof event {
+    PaymentOrderCreatedEvent payment_order_created = 5;
+    PaymentOrderUpdatedEvent payment_order_updated = 6;
+  }
+}
+
+message PaymentOrderCreatedEvent {
+  core_api.v1.payment_orders.PaymentOrder payment_order = 1;
+}
+
+message PaymentOrderUpdatedEvent {
+  core_api.v1.payment_orders.PaymentOrder payment_order = 1;
+  google.protobuf.FieldMask update_mask = 2;
+}

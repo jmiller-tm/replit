@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+import "common_protos_version.proto";
+
+import "vault_kernel_core_api_proto_v1_restrictions_core_api_restrictions.proto";
+
+package core_stream_api_events.v1.restriction_set;
+
+message RestrictionSetEvent {
+  string event_id = 1;
+  google.protobuf.Timestamp timestamp = 2;
+  version.SemVer vault_version = 3;
+  int64 change_id = 4;
+
+  oneof event {
+    RestrictionSetCreatedEvent restriction_set_created = 5;
+    RestrictionSetUpdatedEvent restriction_set_updated = 6;
+  }
+}
+
+message RestrictionSetCreatedEvent {
+  core_api.v1.restrictions.RestrictionSet restriction_set = 1;
+}
+
+message RestrictionSetUpdatedEvent {
+  core_api.v1.restrictions.RestrictionSet restriction_set = 1;
+  google.protobuf.FieldMask update_mask = 2;
+}

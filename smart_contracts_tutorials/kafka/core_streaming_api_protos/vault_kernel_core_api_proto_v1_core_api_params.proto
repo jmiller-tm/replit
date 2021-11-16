@@ -1,0 +1,89 @@
+syntax = "proto3";
+
+package core_api.v1.params;
+
+import "google/protobuf/timestamp.proto";
+
+message Param {
+  reserved 13, 14, 15;
+
+  string name = 1;
+  string display_name = 2;
+  string description = 3;
+  string value = 4;
+  string default_value = 5;
+  google.protobuf.Timestamp effective_timestamp = 6;
+  Level level = 7;
+  UpdatePermission update_permission = 8;
+
+  oneof parameter_type {
+    NumberField number = 9;
+    AccountField account = 10;
+    ValueChoiceField values = 11;
+    DenominationField denomination = 12;
+    DateField date = 16;
+  }
+  bool derived = 17;
+}
+
+enum Level {
+  LEVEL_UNKNOWN = 0;
+  LEVEL_GLOBAL = 1;
+  LEVEL_PRODUCT = 2;
+  LEVEL_INSTANCE = 3;
+  LEVEL_SIMULATION = 4;
+}
+
+enum UpdatePermission {
+  UPDATE_PERMISSION_UNKNOWN = 0;
+  UPDATE_PERMISSION_FIXED = 1;
+  UPDATE_PERMISSION_OPS_EDITABLE = 2;
+  UPDATE_PERMISSION_CUSTOMER_EDITABLE = 3;
+  UPDATE_PERMISSION_CUSTOMER_EDITABLE_WITH_OPS_PERMISSION = 4;
+}
+
+message StringField {}
+
+message NumberField {
+  NumberFieldDisplayStyle value_type = 1;
+  string min_value = 2;
+  string max_value = 3;
+  string step = 4;
+}
+
+enum NumberFieldDisplayStyle {
+  NUMBER_FIELD_DISPLAY_STYLE_NOT_SPECIFIED = 0;
+  NUMBER_FIELD_DISPLAY_STYLE_PLAIN = 1;
+  NUMBER_FIELD_DISPLAY_STYLE_PERCENTAGE = 2;
+  NUMBER_FIELD_DISPLAY_STYLE_MONEY = 3;
+  NUMBER_FIELD_DISPLAY_STYLE_MONTHS = 4;
+}
+
+message AccountField {}
+
+message ValueChoiceField { repeated ValueChoice values = 1; }
+
+message ValueChoice {
+  string value = 1;
+  string display_name = 2;
+}
+
+message DenominationField { repeated string permitted_denominations = 1; }
+
+enum DateType {
+  DATE_TYPE_UNKNOWN = 0;
+  DATE_TYPE_RELATIVE = 1;
+  DATE_TYPE_ABSOLUTE = 2;
+}
+
+message DateField {
+  DateType type = 1;
+  Date start = 2;
+  Date end = 3;
+}
+
+message Date {
+  int32 year = 1;
+  int32 month = 2;
+  int32 day = 3;
+}

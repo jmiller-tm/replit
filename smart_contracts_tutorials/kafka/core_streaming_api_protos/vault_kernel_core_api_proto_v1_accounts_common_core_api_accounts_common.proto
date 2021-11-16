@@ -1,0 +1,53 @@
+syntax = "proto3";
+
+package core_api.v1.accounts_common;
+
+import "google/protobuf/timestamp.proto";
+
+import "vault_kernel_core_api_proto_v1_accounts_common_core_api_accounting.proto";
+import "vault_kernel_postings_api_proto_v1_api.proto";
+
+message AccountBalance {
+  string as_of_posting_instruction_batch_id = 1;
+  repeated LiveBalance live_balances = 2;
+}
+
+message LiveBalance {
+  string amount = 1;
+  string account_address = 2;
+  posting_api.v1.PostingPhase phase = 3;
+  string asset = 4;
+  string denomination = 5;
+}
+
+enum AccountStatus {
+  reserved 1, 2, 4;
+  ACCOUNT_STATUS_UNKNOWN = 0;
+  ACCOUNT_STATUS_OPEN = 3;
+  ACCOUNT_STATUS_CLOSED = 5;
+  ACCOUNT_STATUS_CANCELLED = 6;
+  ACCOUNT_STATUS_PENDING_CLOSURE = 7;
+  ACCOUNT_STATUS_PENDING = 8;
+}
+
+message Accounting { core_api.v1.accounting.Tside tside = 1; }
+
+enum AccountView {
+  ACCOUNT_VIEW_BASIC = 0;
+  ACCOUNT_VIEW_INCLUDE_BALANCES = 1;
+}
+
+message AccountNote {
+  string id = 1;
+  string account_id = 2;
+  string body = 3;
+  AccountNoteType type = 4;
+  google.protobuf.Timestamp effective_timestamp = 5;
+  bool is_visible_to_customer = 6;
+}
+
+enum AccountNoteType {
+  ACCOUNT_NOTE_TYPE_UNKNOWN = 0;
+  ACCOUNT_NOTE_TYPE_RAW_TEXT = 1;
+  ACCOUNT_NOTE_TYPE_REASON_CODE = 2;
+}

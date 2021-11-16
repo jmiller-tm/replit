@@ -1,0 +1,160 @@
+syntax = "proto3";
+
+package core_api.v1.restrictions;
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/descriptor.proto";
+import "google/protobuf/field_mask.proto";
+
+message CreateRestrictionSetDefinitionVersionRequest {
+  RestrictionSetDefinitionVersion restriction_set_definition_version = 1;
+  string request_id = 2;
+}
+
+message ListRestrictionSetDefinitionsRequest {
+  uint32 page_size = 1;
+  string page_token = 2;
+}
+
+message ListRestrictionSetDefinitionsResponse {
+  repeated RestrictionSetDefinition restriction_set_definitions = 1;
+  string previous_page_token = 2;
+  string next_page_token = 3;
+}
+
+message ListRestrictionSetDefinitionVersionsRequest {
+  bool exclude_previous_versions = 1;
+  string restriction_set_definition_id = 2;
+}
+
+message ListRestrictionSetDefinitionVersionsResponse {
+  repeated RestrictionSetDefinitionVersion restriction_set_definition_versions =
+      1;
+}
+
+message BatchGetRestrictionSetDefinitionVersionsRequest {
+  repeated string ids = 1;
+}
+
+message BatchGetRestrictionSetDefinitionVersionsResponse {
+  map<string, RestrictionSetDefinitionVersion>
+      restriction_set_definition_versions = 1;
+}
+
+message CreateRestrictionSetRequest {
+  RestrictionSet restriction_set = 1;
+  ;
+  string request_id = 2;
+}
+
+message UpdateRestrictionSetRequest {
+  RestrictionSet restriction_set = 1;
+  string request_id = 2;
+  google.protobuf.FieldMask update_mask = 3;
+}
+
+message BatchGetRestrictionSetsRequest { repeated string ids = 1; }
+
+message BatchGetRestrictionSetsResponse {
+  map<string, RestrictionSet> restriction_sets = 1;
+}
+
+message ListRestrictionsRequest {
+  google.protobuf.Timestamp effective_timestamp = 1;
+  repeated string customer_ids = 2;
+  repeated string account_ids = 3;
+  repeated string payment_device_ids = 4;
+}
+
+message ListRestrictionsResponse { repeated Restriction restrictions = 1; }
+
+message ListRestrictionSetsRequest {
+  google.protobuf.Timestamp effective_timestamp = 1;
+  repeated string customer_ids = 2;
+  repeated string account_ids = 3;
+  repeated string payment_device_ids = 4;
+}
+
+message ListRestrictionSetsResponse {
+  repeated RestrictionSet restriction_sets = 1;
+}
+
+message RestrictionSetDefinition {
+  string id = 1;
+  string name = 2;
+  bool is_active = 3;
+}
+
+message RestrictionSetDefinitionVersion {
+  string id = 1;
+  repeated RestrictionDefinition restriction_definitions = 2;
+  string restriction_set_definition_id = 3;
+  string description = 4;
+  google.protobuf.Timestamp create_timestamp = 5;
+  bool is_current = 6;
+}
+
+message RestrictionDefinition {
+  RestrictionType restriction_type = 1;
+  repeated RestrictionLevel required_restriction_levels = 2;
+}
+
+message RestrictionSet {
+  string id = 1;
+  string restriction_set_definition_id = 2;
+  string restriction_set_definition_version_id = 3;
+  string name = 4;
+  repeated Restriction restrictions = 5;
+  string description = 6;
+  map<string, string> restriction_set_parameters = 7;
+  string customer_id = 8;
+  string account_id = 9;
+  string payment_device_id = 10;
+  google.protobuf.Timestamp effective_timestamp = 11;
+  google.protobuf.Timestamp expiry_timestamp = 12;
+  bool is_active = 13;
+}
+
+message Restriction {
+  RestrictionType restriction_type = 1;
+  map<string, string> parameters = 2;
+  string customer_id = 3;
+  string account_id = 4;
+  string payment_device_id = 5;
+  google.protobuf.Timestamp effective_timestamp = 6;
+  google.protobuf.Timestamp expiry_timestamp = 7;
+  string id = 8;
+}
+
+message RestrictionTypeDescriptor {
+  repeated string required_parameters = 1;
+  repeated string optional_parameters = 2;
+}
+
+extend google.protobuf.EnumValueOptions {
+  RestrictionTypeDescriptor restriction_type_descriptor = 61003;
+}
+
+enum RestrictionType {
+  reserved 8;
+  reserved "RESTRICTION_TYPE_LIMIT_PAYMENTS";
+  RESTRICTION_TYPE_UNKNOWN = 0;
+  RESTRICTION_TYPE_PREVENT_CREDITS = 1;
+  RESTRICTION_TYPE_REVIEW_CREDITS = 2;
+  RESTRICTION_TYPE_PREVENT_DEBITS = 3;
+  RESTRICTION_TYPE_REVIEW_DEBITS = 4;
+  RESTRICTION_TYPE_PREVENT_CLOSURE = 5;
+  RESTRICTION_TYPE_PREVENT_OPENING = 6;
+  RESTRICTION_TYPE_PREVENT_DETAILS_CHANGES = 7;
+  RESTRICTION_TYPE_LIMIT_DEBITS = 9;
+  RESTRICTION_TYPE_LIMIT_CREDITS = 10;
+  RESTRICTION_TYPE_PREVENT_UPDATES = 11;
+  RESTRICTION_TYPE_PREVENT_ACCOUNT_CREATION = 12;
+}
+
+enum RestrictionLevel {
+  RESTRICTION_LEVEL_UNKNOWN = 0;
+  RESTRICTION_LEVEL_CUSTOMER = 1;
+  RESTRICTION_LEVEL_ACCOUNT = 2;
+  RESTRICTION_LEVEL_PAYMENT_DEVICE = 3;
+}

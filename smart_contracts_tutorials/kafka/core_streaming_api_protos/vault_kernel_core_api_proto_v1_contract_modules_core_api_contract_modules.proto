@@ -1,0 +1,131 @@
+syntax = "proto3";
+
+package core_api.v1.contract_modules;
+
+import "google/protobuf/timestamp.proto";
+
+import "common_protos_version.proto";
+
+message CreateContractModuleRequest {
+  string request_id = 1;
+  ContractModule contract_module = 2;
+}
+
+message ListContractModulesRequest {
+  uint32 page_size = 1;
+  string page_token = 2;
+}
+
+message ListContractModulesResponse {
+  repeated ContractModule contract_modules = 1;
+  string next_page_token = 2;
+  string previous_page_token = 3;
+}
+
+message BatchGetContractModulesRequest { repeated string ids = 1; }
+
+message BatchGetContractModulesResponse {
+  map<string, ContractModule> contract_modules = 1;
+}
+
+message CreateContractModuleVersionRequest {
+  string request_id = 1;
+  ContractModuleVersion contract_module_version = 2;
+}
+
+message ListContractModuleVersionsRequest {
+  string contract_module_id = 1;
+  uint32 page_size = 2;
+  string page_token = 3;
+}
+
+message ListContractModuleVersionsResponse {
+  repeated ContractModuleVersion contract_module_versions = 1;
+  string next_page_token = 2;
+  string previous_page_token = 3;
+}
+
+message BatchGetContractModuleVersionsRequest {
+  repeated string ids = 1;
+
+  enum IncludeField {
+    INCLUDE_FIELD_CODE = 0;
+    INCLUDE_FIELD_DETAILS_API_VERSION = 1;
+    INCLUDE_FIELD_DETAILS_CALLABLE_DETAILS = 2;
+  }
+  repeated IncludeField fields_to_include = 2;
+}
+
+message BatchGetContractModuleVersionsResponse {
+  map<string, ContractModuleVersion> contract_module_versions = 1;
+}
+
+message CreateSmartContractModuleVersionsLinkRequest {
+  string request_id = 1;
+  SmartContractModuleVersionsLink smart_contract_module_versions_link = 2;
+}
+
+message ListSmartContractModuleVersionsLinksRequest {
+  repeated string smart_contract_version_ids = 1;
+  repeated string contract_module_version_ids = 2;
+  uint32 page_size = 3;
+  string page_token = 4;
+}
+
+message ListSmartContractModuleVersionsLinksResponse {
+  repeated SmartContractModuleVersionsLink
+      smart_contract_module_versions_links = 1;
+  string next_page_token = 2;
+  string previous_page_token = 3;
+}
+
+message BatchGetSmartContractModuleVersionsLinksRequest {
+  repeated string ids = 1;
+}
+
+message BatchGetSmartContractModuleVersionsLinksResponse {
+  map<string, SmartContractModuleVersionsLink>
+      smart_contract_module_versions_links = 1;
+}
+
+message ContractModule {
+  string id = 1;
+  google.protobuf.Timestamp create_timestamp = 2;
+  string display_name = 3;
+  string description = 4;
+}
+
+message ContractModuleVersion {
+  string id = 1;
+  google.protobuf.Timestamp create_timestamp = 2;
+  string contract_module_id = 3;
+  string display_name = 4;
+  string description = 5;
+  string code = 6;
+  ContractModuleCodeDetails contract_module_code_details = 7;
+}
+
+message ContractModuleCodeDetails {
+  version.SemVer api_version = 1;
+  SharedFunctionDetails shared_function_details = 2;
+}
+
+message SharedFunctionDetails { repeated SharedFunction shared_functions = 1; }
+
+message SharedFunction {
+  string name = 1;
+  repeated SharedFunctionArg args = 2;
+  string return_type = 3;
+}
+
+message SharedFunctionArg {
+  string name = 1;
+  string type = 2;
+}
+
+message SmartContractModuleVersionsLink {
+  string id = 1;
+  string smart_contract_version_id = 2;
+  map<string, string> alias_to_contract_module_version_id = 3;
+  google.protobuf.Timestamp create_timestamp = 4;
+}

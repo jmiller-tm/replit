@@ -1,0 +1,80 @@
+syntax = "proto3";
+
+package core_api.v1.auth;
+
+import "google/protobuf/field_mask.proto";
+
+message ValidateTokenRequest {}
+
+message ValidateTokenResponse { bool is_valid = 1; }
+
+message CreateServiceAccountRequest {
+  ServiceAccount service_account = 1;
+  string request_id = 2;
+}
+
+message UpdateServiceAccountRequest {
+  string request_id = 1;
+  ServiceAccount service_account = 2;
+  google.protobuf.FieldMask update_mask = 3;
+  ServiceAccountTokenUpdateOptions token_update_options = 4;
+}
+
+message ServiceAccountTokenUpdateOptions { bool refresh_token = 1; }
+
+message UpdateServiceAccountPermissionsRequest {
+  string service_account_id = 1;
+  string request_id = 2;
+  repeated string items_to_add = 3;
+  repeated string items_to_remove = 4;
+}
+
+message ListServiceAccountsRequest {
+  repeated ServiceAccountStatus service_account_statuses = 1;
+  uint32 page_size = 2;
+  string page_token = 3;
+}
+
+message ListServiceAccountsResponse {
+  repeated ServiceAccount service_accounts = 1;
+  string next_page_token = 2;
+  string previous_page_token = 3;
+}
+
+message GetServiceAccountRequest { string id = 1; }
+
+message BatchGetServiceAccountsRequest { repeated string ids = 1; }
+
+message BatchGetServiceAccountsResponse {
+  map<string, ServiceAccount> service_accounts = 1;
+}
+
+message ServiceAccount {
+  string id = 1;
+  string name = 2;
+
+  string token = 3;
+  ServiceAccountStatus status = 4;
+  repeated string permissions = 5;
+}
+
+enum ServiceAccountStatus {
+  SERVICE_ACCOUNT_STATUS_UNKNOWN = 0;
+  SERVICE_ACCOUNT_STATUS_ACTIVE = 1;
+  SERVICE_ACCOUNT_STATUS_INACTIVE = 2;
+  SERVICE_ACCOUNT_STATUS_FROZEN = 3;
+}
+
+enum IdentifierType {
+  reserved 3;
+  reserved "IDENTIFIER_TYPE_USER_ID";
+  IDENTIFIER_TYPE_UNKNOWN = 0;
+  IDENTIFIER_TYPE_USERNAME = 1;
+  IDENTIFIER_TYPE_EMAIL = 2;
+  IDENTIFIER_TYPE_PHONE = 4;
+}
+
+message Identifier {
+  IdentifierType identifier_type = 1;
+  string identifier = 2;
+}

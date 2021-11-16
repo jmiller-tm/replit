@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package core_api.v1.common;
+
+message ExecutionSchedule {
+  string start_date = 1;
+  string end_date = 2;
+
+  string day = 3;
+  string day_of_week = 4;
+  string hour = 5;
+  string minute = 6;
+  string second = 7;
+  string month = 8;
+  string year = 9;
+  string week = 10;
+}
+
+message Overrides { OverrideRestrictions override_restrictions = 1; }
+
+message OverrideRestrictions {
+  bool all = 1;
+  repeated string restriction_set_ids = 2;
+  repeated string restriction_set_definition_ids = 3;
+  repeated string restriction_set_definition_version_ids = 4;
+}

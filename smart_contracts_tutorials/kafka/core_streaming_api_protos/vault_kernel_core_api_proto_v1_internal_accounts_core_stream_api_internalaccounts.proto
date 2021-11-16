@@ -1,0 +1,13 @@
+
+syntax = "proto3";
+
+import "vault_kernel_core_api_proto_v1_accounts_common_core_api_accounts_common.proto";
+import "vault_kernel_core_api_proto_v1_common_core_stream_api_common.proto";
+
+package core_stream_api.v1.internal_accounts;
+
+message InternalAccountBalanceUpdatedEvent {
+  string id = 1;
+  core_api.v1.accounts_common.AccountBalance account_balance = 2;
+  core_stream_api.v1.common.TechnicalMetadata technical_metadata = 3;
+}
