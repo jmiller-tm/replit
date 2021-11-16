@@ -1,0 +1,150 @@
+{
+    "default_environment": "inception_testing",
+    "environments": {
+        "local": {
+            "ops_dash_url": "http://localhost:31008",
+            "core_api_url": "http://localhost:31020",
+            "data_loader_api_url": "http://localhost:31025",
+            "payments_hub_url": "http://localhost:31021",
+            "products_api_url": "http://localhost:31045",
+            "workflow_api_url": "http://localhost:31040",
+            "xpl_api_url": "http://localhost:32093",
+            "prometheus_api_url": "https://metrics.internal.tmachine.io",
+            "kafka": {
+                "bootstrap.servers": "localhost:39092"
+            },
+            "service_account_name": "",
+            "service_account_id": "",
+            "access_token": ""
+        },
+        "sonic_hogan": {
+            "basic_auth_username": "skyfall",
+            "basic_auth_password": "Dreamthief2020",
+            "ops_dash_url": "https://ops-hogan.sonic.tmachine.io",
+            "core_api_url": "https://core-api-hogan.sonic.tmachine.io",
+            "data_loader_api_url": "https://data-loader-api-hogan.sonic.tmachine.io",
+            "workflow_api_url": "https://workflows-api-hogan.sonic.tmachine.io",
+            "xpl_api_url": "https://xpl-hogan.sonic.tmachine.io",
+            "prometheus_api_url": "https://metrics.internal.tmachine.io",
+            "kafka": {
+                "bootstrap.servers": "kafka.kafka-v2-hogan.sonic.tmachine.io"
+            },
+            "cluster": "fast-hedgehog",
+            "namespace": "sonic-hogan",
+            "service_account_name": "perf_test",
+            "service_account_id": "1687934888961577436",
+            "access_token": "A0005213584428475187455!eTuzV218PXFcWSRRTybzaKf+kxdq3kPo7Jv5e18gySPoT6aFVB/BogxYXZx3bQtacP0JQqoN11QUIpFfjdwcZ3XMHn0=",
+            "performance_testing": true
+        },
+        "inception_testing": {
+            "basic_auth_username": "inception-dev",
+            "basic_auth_password": "DreamThief2021",
+            "ops_dash_url": "https://ops-testing.inception.tmachine.io",
+            "core_api_url": "https://core-api-testing.inception.tmachine.io",
+            "data_loader_api_url": "https://data-loader-api-testing.inception.tmachine.io",
+            "payments_hub_url": "https://payments-hub-api-testing.inception.tmachine.io",
+            "products_api_url": "https://products-api-testing.inception.tmachine.io",
+            "workflow_api_url": "https://workflows-api-testing.inception.tmachine.io",
+            "xpl_api_url": "https://xpl-testing.inception.tmachine.io",
+            "prometheus_api_url": "https://metrics.internal.tmachine.io",
+            "kafka": {
+                "bootstrap.servers": "kafka.kafka-v2-testing.inception.tmachine.io"
+            },
+            "cluster": "great-curie",
+            "namespace": "inception-testing",
+            "service_account_name": "",
+            "service_account_id": "",
+            "access_token": "A0003191850699255096863!LOkEYIXolygc0lirl0alv5YsRJCDMhWbC8wQ262PVvX+uSy4Q8o5so9vrU7ur0yTdsQLVWoQkQWEikn52/YPYJlQa2s="
+        },
+        "inception_qa": {
+            "basic_auth_username": "inception-dev",
+            "basic_auth_password": "18753264",
+            "ops_dash_url": "https://ops-qa.inception.tmachine.io",
+            "core_api_url": "https://core-api-qa.inception.tmachine.io",
+            "data_loader_api_url": "https://data-loader-api-qa.inception.tmachine.io",
+            "payments_hub_url": "https://payments-hub-api-qa.inception.tmachine.io",
+            "products_api_url": "https://products-api-qa.inception.tmachine.io",
+            "workflow_api_url": "https://workflows-api-qa.inception.tmachine.io",
+            "xpl_api_url": "https://xpl-qa.inception.tmachine.io",
+            "kafka": {
+                "bootstrap.servers": "kafka.kafka-v2-qa.inception.tmachine.io"
+            },
+            "service_account_name": "e2e",
+            "service_account_id": "960074251171789693",
+            "access_token": "A000960074251171789693!MaCjHQ8jYRKd4BfgNxfv5zRvDihLfR1MajKli5tH+4ExDZCh546EJxhOmCYS/0FGGi06Z7cR+jfHjEjiNgXHHcOvE3M="
+        },
+        "eng_staging": {
+            "core_api_url": "https://core-api-staging.eng.tmachine.io",
+            "data_loader_api_url": "https://data-loader-api-staging.eng.tmachine.io",
+            "payments_hub_url": "https://payments-hub-api-staging.eng.tmachine.io",
+            "workflow_api_url": "https://workflows-api-staging.eng.tmachine.io",
+            "xpl_api_url": "https://xpl-staging.eng.tmachine.io",
+            "service_account_name": "",
+            "service_account_id": "",
+            "access_token": "A0006036759076959611134!894vmWUqTVbfyMksjTL/dx5lcr0Z3UQWtx5j46zlZC8MjNzIujettL6UB3SciczrzN26aoKIcVP2h68WpfH96bNidFo="
+        },
+        "eng_dev": {
+            "core_api_url": "https://core-api-dev.eng.tmachine.io",
+            "data_loader_api_url": "https://data-loader-api-dev.eng.tmachine.io",
+            "payments_hub_url": "https://payments-hub-api-dev.eng.tmachine.io",
+            "workflow_api_url": "https://workflows-api-dev.eng.tmachine.io",
+            "xpl_api_url": "https://xpl-dev.eng.tmachine.io",
+            "service_account_name": "",
+            "service_account_id": "",
+            "access_token": "A0001755218942558205436!f7YEOuzwFMO+9aDQKcH2FIOjL1tJgs/MWJ4XV3m/nevSJsdnu70mj+7dNAomiGJkG2krt8PzQTu6YuQVqoosD50yAwI="
+        },
+        "inception_ephemeral": {
+            "ops_dash_url": "https://ops-inception.premerge-test.tmachine.io",
+            "core_api_url": "https://core-api-inception.premerge-test.tmachine.io",
+            "data_loader_api_url": "https://data-loader-api-inception.premerge-test.tmachine.io",
+            "payments_hub_url": "https://payments-hub-api-inception.premerge-test.tmachine.io",
+            "products_api_url": "https://products-api-inception.premerge-test.tmachine.io",
+            "workflow_api_url": "https://workflows-api-inception.premerge-test.tmachine.io",
+            "xpl_api_url": "https://xpl-inception.premerge-test.tmachine.io",
+            "prometheus_api_url": "https://metrics.internal.tmachine.io",
+            "kafka": {
+                "bootstrap.servers": "kafka-inception.premerge-test.tmachine.io"
+            },
+            "cluster": "premerge-test",
+            "namespace": "eph-inception",
+            "service_account_name": "",
+            "service_account_id": "",
+            "access_token": "A0006634031219543047358!qDilRBIHx6mtd29gl0Lc9nywlFSgpn4WJPzE1frHvMQfmXNNwDwMDnrg+7ldibtoMRPL9si4J9hWYTfmPvBLpS5YATU=",
+            "performance_testing": false
+        },
+        "skyfall_inception": {
+            "basic_auth_username": "skyfall",
+            "basic_auth_password": "Dreamthief2020",
+            "ops_dash_url": "https://ops-inception.skyfall.tmachine.io",
+            "core_api_url": "https://core-api-inception.skyfall.tmachine.io",
+            "data_loader_api_url": "https://data-loader-api-inception.skyfall.tmachine.io",
+            "workflow_api_url": "https://workflows-api-inception.skyfall.tmachine.io",
+            "xpl_api_url": "https://xpl-inception.skyfall.tmachine.io",
+            "prometheus_api_url": "https://metrics.internal.tmachine.io",
+            "kafka": {
+                "bootstrap.servers": "kafka.kafka-v2-inception.skyfall.tmachine.io",
+                "security.protocol": "ssl"
+            },
+            "cluster": "skyfall",
+            "namespace": "skyfall-inception",
+            "service_account_name": "perf_test",
+            "service_account_id": "1687934888961577436",
+            "access_token": "A0002466457682223958847!gf9a5uUsez7EV3GzhoxOyfz6QkPWOtzRlEoUuomsYoikfBZRCRIFt7sDbqakd+tUmSVSnLNYUOgRxYelMDqfD/JvYdI=",
+            "performance_testing": true
+        },
+        "tm_presales": {
+            "core_api_url": "https://core-api-presales.tm-aws.tmachine.io",
+            "workflow_api_url": "https://workflows-api-presales.tm-aws.tmachine.io",
+            "service_account_name": "inception",
+            "service_account_id": "2484787443234079121",
+            "access_token": "A0004931707873269997970!zSTrby2nWcojocRDta4N2/+m659mkJuDQzQ66B4Zud1amNwJooGwusClX2ZwCwe1kRbOW/EvoyC2kfwxrhFufff7i/8="
+        },
+        "tm_demo": {
+            "core_api_url": "https://core-api-demo.tm.tmachine.io",
+            "workflow_api_url": "https://workflows-api-demo.tm.tmachine.io",
+            "service_account_name": "inception",
+            "service_account_id": "6717988160721604339",
+            "access_token": "A0006717988160721604339!Ek53TOmdQqvN/6aGGDYVTAhzoJgIrjgBEKEpWNd/xpBAkHoRHNL6ZPLD49yyUhSsSLoj5nHfRiVq4wA0coPO6m4eTfA="
+        }
+    }
+}
